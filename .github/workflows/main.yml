@@ -1,0 +1,44 @@
+name: Build cef and cefpython
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 2.7
+
+      - name: Install requirements
+        run: |
+          pip install -r tools/requirements.txt
+       
+      - name: Build cef
+        run: |
+          mkdir -p build
+          cd build
+          python ../tools/automate.py --build-cef --proprietary-codecs --ninja-jobs 4
+
+      - name: Build cefpython
+        run: |
+          mkdir -p build
+          cd build
+          python ../tools/build.py ${{ github.event.inputs.version }}
+          python ../tools/make_installer.py ${{ github.event.inputs.version }} --wheel --universal
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "cefpython"
+          path: "build/cefpython3_*/dist/*.whl"
+
