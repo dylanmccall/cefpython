@@ -1,0 +1,55 @@
+name: Build cef and cefpython
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+      depot_tools_version:
+        description: 'Chromium depot_tools version'
+        required: true
+        default: 85c75025906ac77b4f7979896985119dfb8dca1b
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 2.7
+
+      - name: Install requirements
+        run: |
+          pip install -r tools/requirements.txt
+      
+      - name: Checkout chromium depot_tools
+        run: |
+          mkdir -Force build
+          cd build
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools
+          git -C depot_tools checkout ${{ github.event.inputs.depot_tools_version }}
+
+      - name: Build cef
+        run: |
+          mkdir -Force build
+          cd build
+          python ../tools/automate.py --build-cef --no-depot-tools-update --proprietary-codecs --ninja-jobs 4
+
+      - name: Build cefpython
+        run: |
+          mkdir -Force build
+          cd build
+          python ../tools/build.py ${{ github.event.inputs.version }}
+          python ../tools/make_installer.py ${{ github.event.inputs.version }} --wheel --universal
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "cefpython"
+          path: "build/cefpython3_*/dist/*.whl"
+
