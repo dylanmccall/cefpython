@@ -148,14 +148,14 @@ def get_winsdk_lib():
         if ARCH32:
             winsdk_libs = [
                 # Windows 7 SDKs.
-                r"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.1\\Lib",
-                r"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Lib",
+                r"C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Lib",
+                r"C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.0A\\Lib",
             ]
         elif ARCH64:
             winsdk_libs = [
                 # Windows 7 SDKs.
-                r"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.1\\Lib\\x64",
-                r"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Lib\\x64",
+                r"C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Lib\\x64",
+                r"C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.0A\\Lib\\x64",
             ]
         else:
             raise Exception("Unknown architecture")

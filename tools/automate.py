@@ -371,11 +371,6 @@ def build_cef_projects():
     """Build cefclient, cefsimple, ceftests, libcef_dll_wrapper."""
     print("[automate.py] Build cef projects...")
 
-    if WINDOWS:
-        fix_cmake_variables_permanently_windows()
-
-    fix_cef_include_files()
-
     # Find cef_binary directory.
     # Might already be set if --prebuilt-cef flag was passed.
     if not Options.cef_binary:
@@ -400,6 +395,11 @@ def build_cef_projects():
             cef_binary = files[0]
         assert os.path.exists(cef_binary)
         Options.cef_binary = cef_binary
+
+    if WINDOWS:
+        fix_cmake_variables_permanently_windows()
+
+    fix_cef_include_files()
 
     # Set build directory
     build_cefclient_dir = os.path.join(Options.cef_binary,
